@@ -23,8 +23,8 @@ node_modules
 dist
 *.css
 build
-lib
-es
+# lib
+# es
 coverage
 npm-debug.log.*
 yarn.lock
