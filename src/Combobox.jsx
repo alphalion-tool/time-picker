@@ -35,6 +35,7 @@ class Combobox extends Component {
     disabledHours: PropTypes.func,
     disabledMinutes: PropTypes.func,
     disabledSeconds: PropTypes.func,
+    disabledMillisec: PropTypes.func,
     onCurrentSelectPanelChange: PropTypes.func,
     use12Hours: PropTypes.bool,
     isAM: PropTypes.bool,

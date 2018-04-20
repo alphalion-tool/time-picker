@@ -38,6 +38,7 @@ class Panel extends Component {
     showHour: PropTypes.bool,
     showMinute: PropTypes.bool,
     showSecond: PropTypes.bool,
+    showMilliSec: PropTypes.bool,
     onClear: PropTypes.func,
     use12Hours: PropTypes.bool,
     hourStep: PropTypes.number,
@@ -113,8 +114,8 @@ class Panel extends Component {
 
   render() {
     const {
-      prefixCls, className, placeholder, disabledMinutes,
-      disabledSeconds, hideDisabledOptions, allowEmpty, showHour, showMinute, showSecond,
+      prefixCls, className, placeholder, disabledMinutes, disabledMillisec, 
+      disabledSeconds, hideDisabledOptions, allowEmpty, showHour, showMinute, showSecond, showMilliSec,
       format, defaultOpenValue, clearText, onEsc, addon, use12Hours, onClear,
       focusOnOpen, onKeyDown, hourStep, minuteStep, secondStep, inputReadOnly,
     } = this.props;
@@ -152,7 +153,9 @@ class Panel extends Component {
           disabledHours={this.disabledHours}
           disabledMinutes={disabledMinutes}
           disabledSeconds={disabledSeconds}
+          disabledMillisec={disabledMillisec}
           onChange={this.onChange}
+          showMilliSec={showMilliSec}
           onClear={onClear}
           allowEmpty={allowEmpty}
           focusOnOpen={focusOnOpen}

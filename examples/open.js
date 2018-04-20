@@ -26,6 +26,7 @@ class App extends React.Component {
           open={this.state.open}
           onOpen={this.setOpen}
           onClose={this.setOpen}
+          showMilliSec={true}
           focusOnOpen
         />
       </div>

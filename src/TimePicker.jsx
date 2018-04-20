@@ -33,12 +33,14 @@ export default class Picker extends Component {
     showHour: PropTypes.bool,
     showMinute: PropTypes.bool,
     showSecond: PropTypes.bool,
+    showMilliSec: PropTypes.bool,
     style: PropTypes.object,
     className: PropTypes.string,
     popupClassName: PropTypes.string,
     disabledHours: PropTypes.func,
     disabledMinutes: PropTypes.func,
     disabledSeconds: PropTypes.func,
+    disabledMillisec: PropTypes.func,
     hideDisabledOptions: PropTypes.bool,
     onChange: PropTypes.func,
     onOpen: PropTypes.func,
@@ -76,6 +78,7 @@ export default class Picker extends Component {
     disabledHours: noop,
     disabledMinutes: noop,
     disabledSeconds: noop,
+    disabledMillisec: noop,
     hideDisabledOptions: false,
     placement: 'bottomLeft',
     onChange: noop,
@@ -146,32 +149,32 @@ export default class Picker extends Component {
   }
 
   getFormat() {
-    const { format, showHour, showMinute, showSecond, use12Hours } = this.props;
+    const { format, showHour, showMinute, showSecond, use12Hours, showMilliSec } = this.props;
     if (format) {
       return format;
     }
 
-    if (use12Hours) {
-      const fmtString = ([
+    let fmtString = ([
         showHour ? 'h' : '',
         showMinute ? 'mm' : '',
         showSecond ? 'ss' : '',
       ].filter(item => !!item).join(':'));
 
+    if(showMilliSec) {
+      fmtString = fmtString.concat('.SSS');
+    }
+
+    if (use12Hours) {
       return fmtString.concat(' a');
     }
 
-    return [
-      showHour ? 'HH' : '',
-      showMinute ? 'mm' : '',
-      showSecond ? 'ss' : '',
-    ].filter(item => !!item).join(':');
+    return fmtString;
   }
 
   getPanelElement() {
     const {
       prefixCls, placeholder, disabledHours,
-      disabledMinutes, disabledSeconds, hideDisabledOptions, inputReadOnly,
+      disabledMinutes, disabledSeconds, disabledMillisec, hideDisabledOptions, inputReadOnly,
       allowEmpty, showHour, showMinute, showSecond, defaultOpenValue, clearText,
       addon, use12Hours, focusOnOpen, onKeyDown, hourStep, minuteStep, secondStep,
     } = this.props;
@@ -195,6 +198,7 @@ export default class Picker extends Component {
         disabledHours={disabledHours}
         disabledMinutes={disabledMinutes}
         disabledSeconds={disabledSeconds}
+        disabledMillisec={disabledMillisec}
         hideDisabledOptions={hideDisabledOptions}
         use12Hours={use12Hours}
         hourStep={hourStep}

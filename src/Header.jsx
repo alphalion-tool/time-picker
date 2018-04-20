@@ -17,6 +17,7 @@ class Header extends Component {
     disabledHours: PropTypes.func,
     disabledMinutes: PropTypes.func,
     disabledSeconds: PropTypes.func,
+    disabledMillisec: PropTypes.func,
     onChange: PropTypes.func,
     onClear: PropTypes.func,
     onEsc: PropTypes.func,
@@ -25,6 +26,7 @@ class Header extends Component {
     currentSelectPanel: PropTypes.string,
     focusOnOpen: PropTypes.bool,
     onKeyDown: PropTypes.func,
+    showMilliSec: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -36,6 +38,7 @@ class Header extends Component {
     const { value, format } = props;
     this.state = {
       str: value && value.format(format) || '',
+      millisec: '',
       invalid: false,
     };
   }
@@ -52,10 +55,18 @@ class Header extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { value, format } = nextProps;
+    const { value, format, millisec } = nextProps;
     this.setState({
       str: value && value.format(format) || '',
+      millisec,
       invalid: false,
+    });
+  }
+
+  onMillisecChange = () => {
+    const millisec = event.target.value;
+    this.setState({
+      millisec,
     });
   }
 
@@ -66,7 +77,7 @@ class Header extends Component {
     });
     const {
       format, hourOptions, minuteOptions, secondOptions,
-      disabledHours, disabledMinutes,
+      disabledHours, disabledMinutes, disabledMillisec,
       disabledSeconds, onChange, allowEmpty,
     } = this.props;
 
@@ -80,7 +91,7 @@ class Header extends Component {
         });
         return;
       }
-      value.hour(parsed.hour()).minute(parsed.minute()).second(parsed.second());
+      value.hour(parsed.hour()).minute(parsed.minute()).second(parsed.second()).millisecond(parsed.millisecond());
 
       // if time value not allowed, response warning.
       if (
@@ -98,10 +109,12 @@ class Header extends Component {
       const disabledHourOptions = disabledHours();
       const disabledMinuteOptions = disabledMinutes(value.hour());
       const disabledSecondOptions = disabledSeconds(value.hour(), value.minute());
+      const disabledMillisecOptions = disabledSeconds(value.hour(), value.minute());
       if (
         (disabledHourOptions && disabledHourOptions.indexOf(value.hour()) >= 0) ||
         (disabledMinuteOptions && disabledMinuteOptions.indexOf(value.minute()) >= 0) ||
-        (disabledSecondOptions && disabledSecondOptions.indexOf(value.second()) >= 0)
+        (disabledSecondOptions && disabledSecondOptions.indexOf(value.second()) >= 0) ||
+        (disabledMillisecOptions && disabledMillisecOptions.indexOf(value.disabledMillisec()) >= 0)
       ) {
         this.setState({
           invalid: true,
@@ -113,13 +126,15 @@ class Header extends Component {
         if (
           originalValue.hour() !== value.hour() ||
           originalValue.minute() !== value.minute() ||
-          originalValue.second() !== value.second()
+          originalValue.second() !== value.second() ||
+          originalValue.second() !== value.millisecond()
         ) {
           // keep other fields for rc-calendar
           const changedValue = originalValue.clone();
           changedValue.hour(value.hour());
           changedValue.minute(value.minute());
           changedValue.second(value.second());
+          changedValue.millisecond(value.millisecond());
           onChange(changedValue);
         }
       } else if (originalValue !== value) {
@@ -176,7 +191,7 @@ class Header extends Component {
     const invalidClass = invalid ? `${prefixCls}-input-invalid` : '';
     return (
       <input
-        className={`${prefixCls}-input  ${invalidClass}`}
+        className={`${prefixCls}-input ${prefixCls}-input__time ${invalidClass}`}
         ref="input"
         onKeyDown={this.onKeyDown}
         value={str}
@@ -188,7 +203,7 @@ class Header extends Component {
   }
 
   render() {
-    const { prefixCls } = this.props;
+    const { prefixCls, showMilliSec } = this.props;
     return (
       <div className={`${prefixCls}-input-wrap`}>
         {this.getInput()}
